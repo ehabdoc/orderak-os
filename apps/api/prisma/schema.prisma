@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  pin       String
+  role      String   @default("CASHIER") // ADMIN | CASHIER
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  shifts Shift[]
+  orders Order[]
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String
+  icon      String?    // emoji or icon name
+  sortOrder Int        @default(0)
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items MenuItem[]
+}
+
+model MenuItem {
+  id          Int       @id @default(autoincrement())
+  categoryId  Int
+  name        String
+  description String?
+  price       Int       // stored in minor units (pt/halala)
+  cost        Int       @default(0)
+  active      Boolean   @default(true)
+  version     Int       @default(1) // bumped on every update — used by clients for sync
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  category Category   @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+}
+
+model Shift {
+  id            Int       @id @default(autoincrement())
+  clientId      String    @unique // client-generated UUID for offline-first idempotency
+  cashierId     Int
+  openedAt      DateTime  @default(now())
+  closedAt      DateTime?
+  openingFloat  Int       @default(0)
+  expectedCash  Int       @default(0)
+  countedCash   Int?
+  variance      Int?
+  status        String    @default("OPEN") // OPEN | CLOSED
+  notes         String?
+
+  cashier User    @relation(fields: [cashierId], references: [id])
+  orders  Order[]
+}
+
+model Order {
+  id              Int       @id @default(autoincrement())
+  clientId        String    @unique // client-generated UUID for offline-first idempotency
+  number          String    @unique // human-readable e.g. "148"
+  type            String    // DINE_IN | TAKEAWAY | DELIVERY
+  status          String    @default("OPEN") // OPEN | PAID | CANCELLED
+  subtotal        Int       @default(0)
+  total           Int       @default(0)
+  customerName    String?
+  customerPhone   String?
+  deliveryAddress String?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  closedAt        DateTime?
+
+  shiftId   Int?
+  cashierId Int
+
+  shift    Shift?      @relation(fields: [shiftId], references: [id])
+  cashier  User        @relation(fields: [cashierId], references: [id])
+  items    OrderItem[]
+  payments Payment[]
+
+  @@index([shiftId])
+  @@index([status])
+}
+
+model OrderItem {
+  id         Int @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  qty        Int @default(1)
+  price      Int // snapshot of price at order time
+  notes      String?
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@index([orderId])
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  clientId  String?  @unique // client-generated UUID for offline-first idempotency
+  orderId   Int
+  method    String   // CASH | TRANSFER | WALLET | ATEL
+  amount    Int
+  reference String?  // transfer/wallet reference number
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}

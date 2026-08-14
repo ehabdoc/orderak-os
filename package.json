@@ -1,0 +1,23 @@
+{
+  "name": "orderak-os",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Orderak OS - نظام كاشير وإدارة مطاعم (Offline-first POS for Sudan)",
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,cyan \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"",
+    "dev:api": "npm run dev -w apps/api",
+    "dev:web": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/api && npm run build -w apps/web",
+    "test": "npm run test -w apps/api && npm run test -w apps/web",
+    "db:migrate": "npm run db:migrate -w apps/api",
+    "db:seed": "npm run db:seed -w apps/api",
+    "setup": "npm install && npm run db:migrate && npm run db:seed"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "sharp": "^0.35.3"
+  }
+}

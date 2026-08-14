@@ -1,0 +1,47 @@
+# Coolify / Docker Compose deployment for Orderak OS.
+# Single host, single domain. nginx on the web container proxies /api/* to the API service.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: orderak-api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=file:/app/data/orderak.db
+      # Fail-fast: the API refuses to boot in production without a real secret.
+      - JWT_SECRET=${JWT_SECRET:-}
+      - CORS_ORIGIN=${CORS_ORIGIN:-}
+    volumes:
+      - sqlite-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    expose:
+      - "3001"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: orderak-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-80}:80"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  sqlite-data:
+    name: orderak-sqlite
