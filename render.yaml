@@ -1,0 +1,25 @@
+# Render Blueprint — one-click deploy for Orderak OS (single service, one URL).
+# Usage: push this repo to GitHub → Render Dashboard → New → Blueprint → pick repo.
+# Render will prompt for JWT_SECRET (auto-generated) and create a 1GB disk for SQLite.
+services:
+  - type: web
+    name: orderak
+    runtime: docker
+    dockerfilePath: ./Dockerfile.single
+    plan: free
+    healthCheckPath: /health
+    disk:
+      name: orderak-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVE_WEB
+        value: true
+      - key: DATABASE_URL
+        value: file:/app/data/orderak.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value:

@@ -11,13 +11,15 @@
     "test": "npm run test -w apps/api && npm run test -w apps/web",
     "db:migrate": "npm run db:migrate -w apps/api",
     "db:seed": "npm run db:seed -w apps/api",
-    "setup": "npm install && npm run db:migrate && npm run db:seed"
+    "setup": "npm install && npm run db:migrate && npm run db:seed",
+    "guide": "node scripts/generate-guide.mjs"
   },
   "workspaces": [
     "apps/*"
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "docx": "^9.7.1",
     "sharp": "^0.35.3"
   }
 }

@@ -20,10 +20,17 @@ function Protected({ children, current }: { children: React.ReactNode; current: 
   const user = useAuth((s) => s.user);
   const loading = useAuth((s) => s.loading);
   const navigate = useNavigate();
-  const shift = useLiveQuery<Shift | undefined>(
+  // Dexie's first() resolves undefined for "no row", so map it to null —
+  // undefined stays reserved for "query still pending".
+  const shift = useLiveQuery<Shift | null | undefined>(
     () =>
       user
-        ? db.shifts.where('status').equals('OPEN').filter((s) => s.cashierId === user.id).first()
+        ? db.shifts
+            .where('status')
+            .equals('OPEN')
+            .filter((s) => s.cashierId === user.id)
+            .first()
+            .then((s) => s ?? null)
         : Promise.resolve(undefined),
     [user?.id],
   );
@@ -40,7 +47,10 @@ function Protected({ children, current }: { children: React.ReactNode; current: 
     // If no active shift and not on /shift already, force shift open
     // (but allow menu management & dashboard for admins; allow login redirect)
     if (shift === undefined) return; // still loading
-    if (shift === null && !location.pathname.startsWith('/shift')) {
+    const adminAllowed =
+      user.role === 'ADMIN' &&
+      (location.pathname.startsWith('/menu') || location.pathname.startsWith('/dashboard'));
+    if (shift === null && !adminAllowed && !location.pathname.startsWith('/shift')) {
       navigate('/shift', { replace: true });
     }
   }, [user, shift, loading, navigate, location.pathname]);
@@ -51,10 +61,17 @@ function Protected({ children, current }: { children: React.ReactNode; current: 
 
 function ShiftScreen() {
   const user = useAuth((s) => s.user);
-  const shift = useLiveQuery<Shift | undefined>(
+  // Dexie's first() resolves undefined for "no row", so map it to null —
+  // undefined stays reserved for "query still pending".
+  const shift = useLiveQuery<Shift | null | undefined>(
     () =>
       user
-        ? db.shifts.where('status').equals('OPEN').filter((s) => s.cashierId === user.id).first()
+        ? db.shifts
+            .where('status')
+            .equals('OPEN')
+            .filter((s) => s.cashierId === user.id)
+            .first()
+            .then((s) => s ?? null)
         : Promise.resolve(undefined),
     [user?.id],
   );
