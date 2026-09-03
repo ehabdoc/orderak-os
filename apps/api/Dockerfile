@@ -7,6 +7,8 @@ RUN npm install --workspaces --include-workspace-root
 
 FROM node:20-alpine AS build
 WORKDIR /app
+# Prisma engines need OpenSSL even on Alpine
+RUN apk add --no-cache openssl
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
@@ -14,6 +16,7 @@ RUN npm run build -w apps/api
 
 FROM node:20-alpine AS runtime
 WORKDIR /app
+RUN apk add --no-cache openssl wget
 ENV NODE_ENV=production
 ENV PORT=3001
 ENV DATABASE_URL=file:/app/data/orderak.db
