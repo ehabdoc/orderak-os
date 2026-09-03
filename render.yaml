@@ -1,6 +1,10 @@
 # Render Blueprint — one-click deploy for Orderak OS (single service, one URL).
-# Usage: push this repo to GitHub → Render Dashboard → New → Blueprint → pick repo.
-# Render will prompt for JWT_SECRET (auto-generated) and create a 1GB disk for SQLite.
+# Usage: Render Dashboard → New → Blueprint → pick this repo → Apply.
+# Free plan: no persistent disk (Render disks need a paid plan). The SQLite
+# file lives on the container filesystem and the entrypoint auto-seeds
+# default users/menu on empty DB — perfect for a demo. Data resets on
+# redeploy/restart. For permanent data, upgrade the service to Starter
+# and add a disk mounted at /app/data.
 services:
   - type: web
     name: orderak
@@ -8,10 +12,6 @@ services:
     dockerfilePath: ./Dockerfile.single
     plan: free
     healthCheckPath: /health
-    disk:
-      name: orderak-data
-      mountPath: /app/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
