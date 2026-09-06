@@ -101,9 +101,9 @@ export default function MenuManagementScreen() {
   };
 
   return (
-    <div className="flex h-full gap-4">
+    <div className="flex min-h-full flex-col gap-4 lg:h-full lg:flex-row">
       {/* Sidebar — Categories */}
-      <aside className="w-56 flex-shrink-0">
+      <aside className="w-full shrink-0 lg:w-56">
         <div className="card p-3">
           <div className="mb-3 flex items-center justify-between px-2">
             <h2 className="font-bold">الأقسام</h2>
@@ -114,14 +114,14 @@ export default function MenuManagementScreen() {
               + قسم
             </button>
           </div>
-          <ul className="space-y-1">
-            <li>
+          <ul className="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0 lg:space-y-1">
+            <li className="shrink-0 lg:block">
               <button
                 onClick={() => setSelectedCategoryId(null)}
-                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold ${
+                className={`flex w-auto items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-semibold lg:w-full ${
                   selectedCategoryId === null
                     ? 'bg-brand-500 text-white'
-                    : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+                    : 'bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 lg:bg-transparent lg:hover:bg-stone-100'
                 }`}
               >
                 <span>الكل</span>
@@ -129,13 +129,13 @@ export default function MenuManagementScreen() {
               </button>
             </li>
             {categories.map((c) => (
-              <li key={c.id}>
+              <li key={c.id} className="shrink-0 lg:block">
                 <button
                   onClick={() => setSelectedCategoryId(c.id)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold ${
+                  className={`flex w-auto items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 py-2.5 text-sm font-semibold lg:w-full ${
                     selectedCategoryId === c.id
                       ? 'bg-brand-500 text-white'
-                      : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+                      : 'bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 lg:bg-transparent lg:hover:bg-stone-100'
                   }`}
                 >
                   <span>
@@ -151,8 +151,8 @@ export default function MenuManagementScreen() {
       </aside>
 
       {/* Main — Items */}
-      <section className="flex-1 overflow-auto">
-        <div className="card p-5">
+      <section className="min-w-0 flex-1 overflow-auto">
+        <div className="card p-4 sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-xs text-stone-500">04 — MENU MANAGEMENT</div>
@@ -210,16 +210,16 @@ export default function MenuManagementScreen() {
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 rounded-xl border border-stone-200 bg-white p-3 dark:border-stone-800 dark:bg-stone-900"
+                  className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-4 dark:border-stone-800 dark:bg-stone-900"
                 >
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <div className="font-semibold">{item.name}</div>
                     <div className="text-xs text-stone-500">{item.description}</div>
                   </div>
-                  <div className="w-28 text-left font-num font-semibold text-brand-600 dark:text-brand-400">
+                  <div className="shrink-0 font-num font-semibold text-brand-600 sm:w-28 sm:text-left dark:text-brand-400">
                     {fmtPrice(item.price)}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2">
                     <button
                       onClick={() => setEditingItem(item)}
                       className="btn-outline !py-1.5 !px-3 text-xs"

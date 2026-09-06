@@ -128,9 +128,9 @@ export default function OrderEntryScreen() {
   };
 
   return (
-    <div className="flex h-full gap-4">
+    <div className="flex min-h-full flex-col gap-4 xl:h-full xl:flex-row">
       {/* Menu list */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <div className="card mb-3 p-4">
           <div className="flex flex-wrap gap-2">
             <button
@@ -182,7 +182,7 @@ export default function OrderEntryScreen() {
       </div>
 
       {/* Order panel */}
-      <div className="flex w-96 flex-col">
+      <div className="flex min-w-0 w-full flex-col xl:w-96 xl:shrink-0">
         <div className="card flex-1 overflow-hidden">
           <div className="border-b border-stone-200 p-4 dark:border-stone-800">
             <h2 className="text-lg font-bold">طلب جديد</h2>

@@ -100,7 +100,7 @@ export default function PaymentScreen() {
   };
 
   return (
-    <div className="grid h-full grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:h-full lg:grid-cols-3">
       {/* Order summary */}
       <div className="col-span-1 flex flex-col gap-3">
         <div className="card p-5">
@@ -174,10 +174,10 @@ export default function PaymentScreen() {
       </div>
 
       {/* Payment form */}
-      <div className="col-span-2 flex flex-col gap-3">
+      <div className="col-span-1 flex flex-col gap-3 lg:col-span-2">
         <div className="card p-4">
           <h3 className="mb-2 text-sm font-bold">طريقة الدفع</h3>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {METHODS.map((m) => (
               <button
                 key={m.key}
@@ -209,15 +209,15 @@ export default function PaymentScreen() {
 
         <div className="card flex-1 p-4">
           <h3 className="mb-2 text-sm font-bold">المبلغ</h3>
-          <div className="mb-4 flex items-center gap-2">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
             <input
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/\D/g, ''))}
-              className="input flex-1 text-2xl font-num font-bold"
+              className="input min-w-0 flex-1 text-2xl font-num font-bold"
               dir="ltr"
               inputMode="numeric"
             />
-            <button onClick={onExact} className="btn-outline">
+            <button onClick={onExact} className="btn-outline shrink-0">
               المتبقي
             </button>
           </div>
@@ -231,7 +231,7 @@ export default function PaymentScreen() {
                   else if (k === '⌫') onBack();
                   else onDigit(k);
                 }}
-                className="btn-outline h-14 text-lg font-num"
+                className="btn-outline h-14 min-w-0 w-full touch-manipulation px-2 text-lg font-num"
               >
                 {k}
               </button>

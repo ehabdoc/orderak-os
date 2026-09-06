@@ -53,8 +53,8 @@ export default function OpenOrdersScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="card mb-4 p-5">
-        <div className="mb-1 flex items-center justify-between">
+      <div className="card mb-4 p-4 sm:p-5">
+        <div className="mb-1 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-xs text-stone-500">01 — OPEN ORDERS</div>
             <h1 className="text-xl font-bold">الطلبات المفتوحة</h1>
@@ -68,13 +68,13 @@ export default function OpenOrdersScreen() {
           </button>
         </div>
 
-        <div className="mt-4 inline-flex rounded-xl bg-stone-100 p-1 dark:bg-stone-800">
+        <div className="mt-4 inline-flex max-w-full overflow-x-auto rounded-xl bg-stone-100 p-1 dark:bg-stone-800">
           {FILTERS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
               className={clsx(
-                'rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors',
+                'shrink-0 rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors',
                 filter === f.key
                   ? 'bg-white text-brand-700 shadow-sm dark:bg-stone-900 dark:text-brand-300'
                   : 'text-stone-600 dark:text-stone-400',

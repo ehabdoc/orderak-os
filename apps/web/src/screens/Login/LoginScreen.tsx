@@ -35,7 +35,7 @@ export default function LoginScreen() {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'back'];
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-950 dark:to-stone-900">
+    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200 p-4 dark:from-stone-950 dark:to-stone-900">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500 text-2xl font-bold text-white shadow-lg">
@@ -68,13 +68,13 @@ export default function LoginScreen() {
             {keys.map((k) => {
               if (k === 'clear')
                 return (
-                  <button key={k} onClick={clear} className="btn-outline text-sm">
+                  <button key={k} onClick={clear} className="btn-outline min-w-0 w-full px-2 text-sm">
                     مسح
                   </button>
                 );
               if (k === 'back')
                 return (
-                  <button key={k} onClick={back} className="btn-outline text-sm">
+                  <button key={k} onClick={back} className="btn-outline min-w-0 w-full px-2 text-sm">
                     ⌫
                   </button>
                 );
@@ -82,7 +82,7 @@ export default function LoginScreen() {
                 <button
                   key={k}
                   onClick={() => append(k)}
-                  className="btn-outline font-num text-lg h-14"
+                  className="btn-outline font-num text-lg h-14 min-w-0 w-full px-2"
                 >
                   {k}
                 </button>

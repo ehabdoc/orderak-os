@@ -94,7 +94,7 @@ export default function ShiftCloseScreen() {
   };
 
   return (
-    <div className="grid h-full grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:h-full lg:grid-cols-3">
       {/* Right — Method breakdown + expected cash */}
       <div className="col-span-1 flex flex-col gap-3">
         <div className="card p-5">
@@ -139,7 +139,7 @@ export default function ShiftCloseScreen() {
       </div>
 
       {/* Center/Right — Counted cash + variance */}
-      <div className="col-span-2 flex flex-col gap-3">
+      <div className="col-span-1 flex flex-col gap-3 lg:col-span-2">
         <div className="card p-4">
           <label className="label">النقد الفعلي في الدرج</label>
           <input
@@ -160,7 +160,7 @@ export default function ShiftCloseScreen() {
                   else if (k === '⌫') back();
                   else onDigit(k);
                 }}
-                className="btn-outline h-12 text-lg font-num"
+                className="btn-outline h-12 min-w-0 w-full touch-manipulation px-2 text-lg font-num"
               >
                 {k}
               </button>

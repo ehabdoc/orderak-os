@@ -40,8 +40,8 @@ export default function ShiftOpenScreen() {
   const clear = () => setOpeningFloat('0');
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="card w-full max-w-md p-6">
+    <div className="flex min-h-full items-center justify-center p-1 sm:p-4">
+      <div className="card w-full max-w-md p-4 sm:p-6">
         <div className="mb-4 text-center">
           <div className="mb-2 text-4xl">⏰</div>
           <h1 className="text-xl font-bold">فتح وردية</h1>
@@ -75,7 +75,7 @@ export default function ShiftOpenScreen() {
                 else if (k === '⌫') back();
                 else addDigit(k);
               }}
-              className="btn-outline h-12 text-lg font-num"
+              className="btn-outline h-12 min-w-0 w-full touch-manipulation px-2 text-lg font-num"
             >
               {k}
             </button>
