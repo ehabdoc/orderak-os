@@ -8,13 +8,14 @@ import type { PaymentMethod } from '../../types';
 import clsx from 'clsx';
 
 const METHODS: { key: PaymentMethod; label: string; color: string }[] = [
-  { key: 'CASH', label: 'نقداً', color: 'bg-brand-100 text-brand-800 dark:bg-brand-900/40 dark:text-brand-300' },
+  { key: 'CASH', label: 'نقداً (كاش)', color: 'bg-brand-100 text-brand-800 dark:bg-brand-900/40 dark:text-brand-300' },
+  { key: 'NETWORK', label: 'شبكة', color: 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200' },
   { key: 'TRANSFER', label: 'بنكك / تحويل', color: 'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200' },
   { key: 'WALLET', label: 'محفظة إلكترونية', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' },
   { key: 'ATEL', label: 'آجل — دين', color: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' },
 ];
 
-const REF_METHODS: PaymentMethod[] = ['TRANSFER', 'WALLET', 'ATEL'];
+const REF_METHODS: PaymentMethod[] = ['TRANSFER', 'WALLET', 'NETWORK', 'ATEL'];
 
 // Safe lookup — never crash on a stored/unknown method.
 function methodMeta(m: PaymentMethod) {
@@ -177,7 +178,7 @@ export default function PaymentScreen() {
       <div className="col-span-1 flex flex-col gap-3 lg:col-span-2">
         <div className="card p-4">
           <h3 className="mb-2 text-sm font-bold">طريقة الدفع</h3>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
             {METHODS.map((m) => (
               <button
                 key={m.key}

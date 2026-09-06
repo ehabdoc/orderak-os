@@ -77,9 +77,14 @@ export default function MenuManagementScreen() {
   };
 
   const addCategory = async (name: string) => {
-    const order = categories.length;
-    await api.post('/categories', { name, sortOrder: order });
-    await load();
+    try {
+      const order = categories.length;
+      await api.post('/categories', { name, sortOrder: order });
+      await load();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'فشل إضافة القسم');
+      throw e;
+    }
   };
 
   const addItem = async (data: {
@@ -88,16 +93,26 @@ export default function MenuManagementScreen() {
     description?: string;
     price: number;
   }) => {
-    await api.post('/menu-items', { ...data, active: true });
-    await load();
+    try {
+      await api.post('/menu-items', { ...data, active: true });
+      await load();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'فشل إضافة الصنف');
+      throw e;
+    }
   };
 
   const updateItem = async (
     id: number,
     data: { name?: string; description?: string; price?: number; active?: boolean; categoryId?: number },
   ) => {
-    await api.patch(`/menu-items/${id}`, data);
-    await load();
+    try {
+      await api.patch(`/menu-items/${id}`, data);
+      await load();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'فشل حفظ التعديل');
+      throw e;
+    }
   };
 
   return (
@@ -245,9 +260,13 @@ export default function MenuManagementScreen() {
       {showAddCategory && (
         <CategoryModal
           onClose={() => setShowAddCategory(false)}
-          onSave={(name) => {
-            addCategory(name);
-            setShowAddCategory(false);
+          onSave={async (name) => {
+            try {
+              await addCategory(name);
+              setShowAddCategory(false);
+            } catch {
+              /* تم عرض الخطأ في تنبيه */
+            }
           }}
         />
       )}
@@ -256,9 +275,13 @@ export default function MenuManagementScreen() {
           categories={categories}
           defaultCategoryId={selectedCategoryId ?? categories[0]?.id ?? 0}
           onClose={() => setShowAddItem(false)}
-          onSave={(data) => {
-            addItem(data);
-            setShowAddItem(false);
+          onSave={async (data) => {
+            try {
+              await addItem(data);
+              setShowAddItem(false);
+            } catch {
+              /* تم عرض الخطأ في تنبيه */
+            }
           }}
         />
       )}
@@ -268,9 +291,13 @@ export default function MenuManagementScreen() {
           defaultCategoryId={editingItem.categoryId}
           item={editingItem}
           onClose={() => setEditingItem(null)}
-          onSave={(data) => {
-            updateItem(editingItem.id, data);
-            setEditingItem(null);
+          onSave={async (data) => {
+            try {
+              await updateItem(editingItem.id, data);
+              setEditingItem(null);
+            } catch {
+              /* تم عرض الخطأ في تنبيه */
+            }
           }}
         />
       )}

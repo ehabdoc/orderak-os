@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { parseId } from '../lib/http.js';
 
 const router = Router();
@@ -54,8 +54,9 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// All mutations are admin-only
-router.post('/', requireAdmin, async (req, res, next) => {
+// Mutations are allowed for all staff (admin + cashier) so items
+// and prices can be added/changed from the cashier device at any time.
+router.post('/', async (req, res, next) => {
   try {
     const data = itemSchema.parse(req.body);
     const item = await prisma.menuItem.create({
@@ -68,7 +69,7 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.patch('/:id', requireAdmin, async (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'الصنف غير موجود' });
@@ -84,7 +85,7 @@ router.patch('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', requireAdmin, async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'الصنف غير موجود' });
@@ -95,8 +96,8 @@ router.delete('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-// Bulk price adjustment (matches mockup 04: +5% / +10% / +15% / +20%) — admin only
-router.post('/bulk-adjust', requireAdmin, async (req, res, next) => {
+// Bulk price adjustment (matches mockup 04: +5% / +10% / +15% / +20%)
+router.post('/bulk-adjust', async (req, res, next) => {
   try {
     const { percent, categoryId, itemIds } = bulkAdjustSchema.parse(req.body);
     const where = {

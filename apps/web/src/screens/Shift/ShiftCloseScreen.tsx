@@ -8,7 +8,8 @@ import { fmtPrice } from '../../lib/format';
 import type { PaymentMethod, Shift } from '../../types';
 
 const METHOD_LABELS: Record<PaymentMethod, string> = {
-  CASH: 'نقداً',
+  CASH: 'نقداً (كاش)',
+  NETWORK: 'شبكة',
   TRANSFER: 'تحويل بنكي',
   WALLET: 'محفظة إلكترونية',
   ATEL: 'آجل — دين',
@@ -41,6 +42,7 @@ export default function ShiftCloseScreen() {
 
   const [breakdown, setBreakdown] = useState<Record<PaymentMethod, number>>({
     CASH: 0,
+    NETWORK: 0,
     TRANSFER: 0,
     WALLET: 0,
     ATEL: 0,
@@ -49,7 +51,7 @@ export default function ShiftCloseScreen() {
   useEffect(() => {
     if (!shift) return;
     (async () => {
-      const totals: Record<PaymentMethod, number> = { CASH: 0, TRANSFER: 0, WALLET: 0, ATEL: 0 };
+      const totals: Record<PaymentMethod, number> = { CASH: 0, NETWORK: 0, TRANSFER: 0, WALLET: 0, ATEL: 0 };
       for (const o of paidOrders) {
         const payments = await listPayments(o.clientId);
         for (const p of payments) {
@@ -108,7 +110,7 @@ export default function ShiftCloseScreen() {
         <div className="card flex-1 p-4">
           <h3 className="mb-3 text-sm font-bold">المبيعات حسب طريقة الدفع</h3>
           <ul className="space-y-2">
-            {(['CASH', 'TRANSFER', 'WALLET', 'ATEL'] as PaymentMethod[]).map((m) => (
+            {(['CASH', 'NETWORK', 'TRANSFER', 'WALLET', 'ATEL'] as PaymentMethod[]).map((m) => (
               <li
                 key={m}
                 className="flex items-center justify-between rounded-xl border border-stone-200 p-2 dark:border-stone-800"

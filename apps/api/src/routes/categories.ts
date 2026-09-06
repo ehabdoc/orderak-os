@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/auth.js';
 import { parseId } from '../lib/http.js';
 
 const router = Router();
@@ -26,8 +26,9 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
-// All mutations are admin-only
-router.post('/', requireAdmin, async (req, res, next) => {
+// Mutations are allowed for all staff (admin + cashier) so the menu
+// and prices can be managed from the cashier device at any time.
+router.post('/', async (req, res, next) => {
   try {
     const data = categorySchema.parse(req.body);
     const category = await prisma.category.create({ data });
@@ -37,7 +38,7 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.patch('/:id', requireAdmin, async (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'القسم غير موجود' });
@@ -49,7 +50,7 @@ router.patch('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', requireAdmin, async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) return res.status(404).json({ error: 'القسم غير موجود' });

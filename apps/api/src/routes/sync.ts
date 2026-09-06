@@ -45,7 +45,7 @@ const pushSchema = z.object({
       z.object({
         clientId: z.string(),
         orderClientId: z.string(),
-        method: z.enum(['CASH', 'TRANSFER', 'WALLET', 'ATEL']),
+        method: z.enum(['CASH', 'TRANSFER', 'WALLET', 'NETWORK', 'ATEL']),
         amount: z.number().int().positive(),
         reference: z.string().optional(),
       }),

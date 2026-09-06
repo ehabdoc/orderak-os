@@ -3,6 +3,15 @@ import { useAuth } from '../../lib/store';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../db/dexie';
 import { fmtPrice } from '../../lib/format';
+import type { PaymentMethod } from '../../types';
+
+const METHOD_META: { key: PaymentMethod; label: string }[] = [
+  { key: 'CASH', label: 'نقداً (كاش)' },
+  { key: 'NETWORK', label: 'شبكة' },
+  { key: 'TRANSFER', label: 'بنكك / تحويل' },
+  { key: 'WALLET', label: 'محفظة إلكترونية' },
+  { key: 'ATEL', label: 'آجل — دين' },
+];
 
 export default function DashboardScreen() {
   const user = useAuth((s) => s.user);
@@ -10,11 +19,23 @@ export default function DashboardScreen() {
 
   const orders = useLiveQuery(() => db.orders.toArray(), []) ?? [];
   const menuItems = useLiveQuery(() => db.menuItems.toArray(), []) ?? [];
+  const payments = useLiveQuery(() => db.payments.toArray(), []) ?? [];
 
   const paidOrders = orders.filter((o) => o.status === 'PAID');
   const totalSales = paidOrders.reduce((s, o) => s + o.total, 0);
   const orderCount = paidOrders.length;
   const avgTicket = orderCount > 0 ? Math.round(totalSales / orderCount) : 0;
+
+  // الموازنة حسب طريقة الدفع — من كل المدفوعات المحفوظة على الجهاز
+  const byMethod = METHOD_META.map((m) => {
+    const list = payments.filter((p) => p.method === m.key);
+    return {
+      ...m,
+      count: list.length,
+      total: list.reduce((s, p) => s + p.amount, 0),
+    };
+  });
+  const collectedTotal = byMethod.reduce((s, m) => s + m.total, 0);
 
   const costById = new Map(menuItems.map((m) => [m.id, m.cost]));
   const netProfit = paidOrders.reduce(
@@ -43,6 +64,29 @@ export default function DashboardScreen() {
         <KpiCard label="عدد الطلبات المدفوعة" value={String(orderCount)} />
         <KpiCard label="متوسط الفاتورة" value={fmtPrice(avgTicket)} />
         <KpiCard label="صافي الربح" value={fmtPrice(netProfit)} accent="brand" />
+      </div>
+
+      <div className="card p-4 sm:p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-bold">الموازنة حسب طريقة الدفع</h2>
+          <span className="font-num text-sm font-bold text-brand-600 dark:text-brand-400">
+            {fmtPrice(collectedTotal)}
+          </span>
+        </div>
+        <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+          {byMethod.map((m) => (
+            <li
+              key={m.key}
+              className="rounded-xl border border-stone-200 p-3 dark:border-stone-800"
+            >
+              <div className="text-sm font-semibold">{m.label}</div>
+              <div className="mt-1 font-num text-xl font-bold">{fmtPrice(m.total)}</div>
+              <div className="mt-0.5 text-xs text-stone-500">
+                <span className="font-num">{m.count}</span> عملية
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="card p-6">

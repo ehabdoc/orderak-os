@@ -27,7 +27,7 @@ export interface MenuItem {
 
 export type OrderType = 'DINE_IN' | 'TAKEAWAY' | 'DELIVERY';
 export type OrderStatus = 'OPEN' | 'PAID' | 'CANCELLED';
-export type PaymentMethod = 'CASH' | 'TRANSFER' | 'WALLET' | 'ATEL';
+export type PaymentMethod = 'CASH' | 'TRANSFER' | 'WALLET' | 'NETWORK' | 'ATEL';
 export type SyncStatus =
   | 'pending'
   | 'syncing'

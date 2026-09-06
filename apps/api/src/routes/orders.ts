@@ -29,7 +29,7 @@ const orderSchema = z.object({
 const paymentSchema = z.object({
   orderClientId: z.string(),
   clientId: z.string().optional(), // offline-first idempotency
-  method: z.enum(['CASH', 'TRANSFER', 'WALLET', 'ATEL']),
+  method: z.enum(['CASH', 'TRANSFER', 'WALLET', 'NETWORK', 'ATEL']),
   amount: z.number().int().positive(),
   reference: z.string().optional(),
 });
